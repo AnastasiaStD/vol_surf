@@ -200,7 +200,7 @@ class VolatilitySurface:
         
         for i, K in enumerate(self.strikes):
             for j, T in enumerate(self.maturities):
-                self.surface[i, j] = model.calculate_implied_volatility(K, T, option_type)
+                self.surface[i, j] = model.calculate_implied_volatility(K, T, option_type=option_type)
                 pbar.update(1)
                 pbar.set_postfix({
                     "strike": f"{K[0]:.1f}", 
@@ -223,8 +223,8 @@ class VolatilitySurface:
         # if np.any(nan_mask):
         #     avg_vol = np.nanmean(self.surface)
         #     self.surface[nan_mask] = avg_vol
-        self.strikes = np.asarray(strikes).flatten()
-        self.maturities = np.asarray(maturities).flatten()
+        self.strikes = np.asarray(self.strikes).astype(float).flatten()
+        self.maturities = np.asarray(self.maturities).astype(float).flatten()
         self.interpolator = RectBivariateSpline(self.strikes, self.maturities, self.surface, kx=3, ky=1)
     
     def get_vol(self, strike: float, maturity: float) -> float:
